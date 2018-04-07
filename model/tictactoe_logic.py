@@ -11,10 +11,14 @@ class Tile(Enum):
     def winner(self):
         return self
 
+    def isDone(self):
+        return self == Tile.X or self == Tile.O
+
 class Winnable:
         def __init__(self, length):
             self.length = length
             self.boards = []
+            self.currentPlayer = Tile.X
 
         def winner(self):
             # did we win horizontally?
@@ -56,7 +60,8 @@ class Winnable:
                 self.isDone = True
             return maybeWinner
 
-
+            def changeCurrentPlayer(self):
+                self.currentPlayer = Tile.O if Tile.X else Tile.X
 
 
 class UltimateBoard(Winnable):
@@ -64,7 +69,6 @@ class UltimateBoard(Winnable):
         super().__init__(length)
         self.length = length
         self.boards = []
-        self.currentPlayer = Tile.X
         self.currentBoard = (-1, -1)  # If -1, -1 then any board is possible (player needs to choose)
         self.isDone = False
 
@@ -78,6 +82,29 @@ class UltimateBoard(Winnable):
     """
     def needToPickNextBoard(self):
         return self.currentBoard == (-1,-1)
+
+    def play(self, x, y):
+        if (self.currentBoard == (-1, -1)):
+            raise Exception("Pick 3 by 3 sub-board first!")
+        if (self.isDone):
+            raise Exception("Game is already finished")
+        x_sup, y_sup = self.currentBoard[0], self.currentBoard[1]
+        result = self.boards[x_sup][y_sup].play(x, y)
+        if result != Tile.EMPTY:
+            raise Exception("Board tile is already occupied")
+        else:
+            self.changeCurrentPlayer()
+            self.changeBoards(self.currentPlayer)
+            if (self.boards[x][y].isDone):
+                self.currentBoard = (-1, -1)
+            else:
+                self.currentBoard = (x, y)
+        self.winner() #updates isdone
+
+    def changeBoards(tile):
+        for x in range(length):
+            for y in range(length):
+                self.boards[x][y].currentPlayer = tile;
 
 
     """
@@ -97,9 +124,17 @@ class Board(Winnable):
         self.length = length
         self.boards = []
         self.isDone = False
-        self.currentPlayer = Tile.X
 
         for i in range(length):
             self.boards.append([])
             for j in range(length):
                 self.boards[i].append(Tile.EMPTY)
+
+    def play(x, y):
+        if self.boards[x][y] == Tile.EMPTY:
+            self.boards[x][y] = self.currentPlayer
+            self.changeCurrentPlayer()
+            return Tile.EMPTY
+        else:
+            return self.boards[x][y]
+        self.winner() #updates isdone
