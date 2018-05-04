@@ -6,7 +6,7 @@ class Tile(Enum):
     O = 'O'
     EMPTY = '.'  # Game can still continue
     # Game cannot be continued or is already finished. We assume a full board is this, even if it is already catscratch.
-    NO_WIN = '.'
+    NO_WIN = 'none'
 
     def winner(self):
         return self
@@ -27,7 +27,7 @@ class Winnable:
                 for j in range(self.length):
                     if self.boards[i][j].winner() != maybeWinner or self.boards[i][j].winner() == Tile.EMPTY:
                         maybeWinner = Tile.EMPTY
-                if maybeWinner != Tile.EMPTY or maybeWinner != Tile.NO_WIN:
+                if maybeWinner != Tile.EMPTY and maybeWinner != Tile.NO_WIN:
                     self.isDone = True
                     return maybeWinner
             # did we win vertically?
@@ -36,7 +36,7 @@ class Winnable:
                 for i in range(self.length):
                     if self.boards[i][j].winner() != maybeWinner or self.boards[i][j].winner() == Tile.EMPTY:
                         maybeWinner = Tile.EMPTY
-                if maybeWinner != Tile.EMPTY or maybeWinner != Tile.NO_WIN:
+                if maybeWinner != Tile.EMPTY and maybeWinner != Tile.NO_WIN:
                     self.isDone = True
                     return maybeWinner
 
@@ -46,7 +46,7 @@ class Winnable:
                 maybeWinner = self.boards[0][0]
                 if self.boards[i][i].winner() != maybeWinner or self.boards[i][i].winner() == Tile.EMPTY:
                     maybeWinner = Tile.EMPTY
-            if maybeWinner != Tile.EMPTY or maybeWinner != Tile.NO_WIN:
+            if maybeWinner != Tile.EMPTY and maybeWinner != Tile.NO_WIN:
                 self.isDone = True
                 return maybeWinner
 
@@ -56,12 +56,23 @@ class Winnable:
                 maybeWinner = self.boards[self.length - 1][0]
                 if self.boards[self.length - i - 1][i].winner() != maybeWinner or self.boards[self.length - i - 1][i].winner() == Tile.EMPTY:
                     maybeWinner = Tile.EMPTY
-            if maybeWinner != Tile.EMPTY or maybeWinner != Tile.NO_WIN:
+            if maybeWinner != Tile.EMPTY and maybeWinner != Tile.NO_WIN:
                 self.isDone = True
-            return maybeWinner
+                return maybeWinner
+            if (self.noValidMovesLeft()):
+                self.isDone = True
+                return Tile.NO_WIN
+            return Tile.EMPTY
 
-            def changeCurrentPlayer(self):
-                self.currentPlayer = Tile.O if Tile.X else Tile.X
+        def noValidMovesLeft(self):
+            for i in range(self.length):
+                for j in range(self.length):
+                    if self.boards[i][j].winner() == Tile.EMPTY:
+                        return False
+            return True
+
+        def changeCurrentPlayer(self):
+            self.currentPlayer = Tile.O if self.currentPlayer==Tile.X else Tile.X
 
 
 class UltimateBoard(Winnable):
@@ -130,11 +141,13 @@ class Board(Winnable):
             for j in range(length):
                 self.boards[i].append(Tile.EMPTY)
 
-    def play(x, y):
+    def play(self, x, y):
+        if (self.isDone):
+            raise Exception("Game is already finished")
         if self.boards[x][y] == Tile.EMPTY:
             self.boards[x][y] = self.currentPlayer
             self.changeCurrentPlayer()
+            self.winner() #updates isdone
             return Tile.EMPTY
         else:
             return self.boards[x][y]
-        self.winner() #updates isdone

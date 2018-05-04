@@ -1,76 +1,69 @@
 import unittest
-from tictactoelogic import Board, UltimateBoard, Tile
+from tictactoe_logic import Board, UltimateBoard, Tile
 
 class TestTicTacToeLogic(unittest.TestCase):
 
-    no_win = Board()
-    no_win.boards[0][0] = Tile.X
-    no_win.boards[0][1] = Tile.X
-    no_win.boards[0][2] = Tile.O
+    noWin = Board()
+    noWin.boards[0][0] = Tile.X
+    noWin.boards[0][1] = Tile.X
+    noWin.boards[0][2] = Tile.O
 
-    vertical_win = Board()
-    vertical_win.boards[0][0] = Tile.X
-    vertical_win.boards[0][1] = Tile.X
-    vertical_win.boards[0][2] = Tile.X
+    verticalWin = Board()
+    verticalWin.boards[0][0] = Tile.X
+    verticalWin.boards[0][1] = Tile.X
+    verticalWin.boards[0][2] = Tile.X
 
-    horizontal_win = Board()
-    horizontal_win.boards[0][1] = Tile.X
-    horizontal_win.boards[1][1] = Tile.X
-    horizontal_win.boards[2][1] = Tile.X
+    horizontalWin = Board()
+    horizontalWin.boards[0][1] = Tile.X
+    horizontalWin.boards[1][1] = Tile.X
+    horizontalWin.boards[2][1] = Tile.X
 
-    diagonal_win = Board()
-    diagonal_win.boards[0][0] = Tile.X
-    diagonal_win.boards[1][1] = Tile.X
-    diagonal_win.boards[2][2] = Tile.X
+    diagonalWin = Board()
+    diagonalWin.boards[0][0] = Tile.X
+    diagonalWin.boards[1][1] = Tile.X
+    diagonalWin.boards[2][2] = Tile.X
 
-    otherDiagonal_win = Board()
-    otherDiagonal_win.boards[2][0] = Tile.O
-    otherDiagonal_win.boards[1][1] = Tile.O
-    otherDiagonal_win.boards[0][2] = Tile.O
+    otherDiagonalWin = Board()
+    otherDiagonalWin.boards[2][0] = Tile.O
+    otherDiagonalWin.boards[1][1] = Tile.O
+    otherDiagonalWin.boards[0][2] = Tile.O
 
     ultimate = UltimateBoard()
-    ultimate.boards[0][0] = horizontal_win
-    ultimate.boards[0][1] = vertical_win
-    ultimate.boards[0][2] = diagonal_win
+    ultimate.boards[0][0] = horizontalWin
+    ultimate.boards[0][1] = verticalWin
+    ultimate.boards[0][2] = diagonalWin
 
 
-    def test_ticTacToe_no_board_win(self):
-        board = self.no_win
+    def testTicTacToe_no_boardWin(self):
+        board = self.noWin
         self.assertEqual(board.winner(), Tile.EMPTY)
         self.assertFalse(board.isDone)
 
-    def test_ticTacToe_vertical_board_win(self):
-        board = self.vertical_win
+    def testTicTacToe_vertical_boardWin(self):
+        board = self.verticalWin
         self.assertEqual(board.winner(), Tile.X)
         self.assertTrue(board.isDone)
 
-    def test_ticTacToe_horizontal_board_win(self):
-        board = self.horizontal_win
+    def testTicTacToe_horizontal_boardWin(self):
+        board = self.horizontalWin
         self.assertEqual(board.winner(), Tile.X)
         self.assertTrue(board.isDone)
 
-    def test_ticTacToe_diagonal_win(self):
-        board = self.diagonal_win
+    def testTicTacToe_diagonalWin(self):
+        board = self.diagonalWin
         self.assertEqual(board.winner(), Tile.X)
         self.assertTrue(board.isDone)
 
-    def test_ticTacToe_other_diagonal_win(self):
-        board = self.otherDiagonal_win
+    def testTicTacToe_other_diagonalWin(self):
+        board = self.otherDiagonalWin
         self.assertEqual(board.winner(), Tile.O)
         self.assertTrue(board.isDone)
 
-    def test_ultimate_ticTacToe_win(self):
+    def test_ultimate_ticTacToeWin(self):
         board = self.ultimate
         self.assertEqual(board.winner(), Tile.X)
         self.assertTrue(board.isDone)
 
-
-    def test_split(self):
-        s = 'hello world'
-        self.assertEqual(s.split(), ['hello', 'world'])
-        # check that s.split fails when the separator is not a string
-        with self.assertRaises(TypeError):
-            s.split(2)
 
 if __name__ == '__main__':
     unittest.main()
