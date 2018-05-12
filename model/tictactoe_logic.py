@@ -1,4 +1,5 @@
 from enum import Enum
+from addict import Dict
 
 
 class Tile(Enum):
@@ -13,6 +14,9 @@ class Tile(Enum):
 
     def isDone(self):
         return self == Tile.X or self == Tile.O
+    # Json form
+    def json(self):
+        return {"tile": self.name}
 
 class Winnable:
         def __init__(self, length):
@@ -74,6 +78,15 @@ class Winnable:
         def changeCurrentPlayer(self):
             self.currentPlayer = Tile.O if self.currentPlayer==Tile.X else Tile.X
 
+        def json(self):
+            jsonDict = Dict()
+            for i in range(self.length):
+                for j in range(self.length):
+                    jsonDict[i][j] = self.boards[i][j].json()
+            jsonDict.isDone = self.isDone
+            jsonDict.currentPlayer = self.currentPlayer.name
+            return jsonDict
+
 
 class UltimateBoard(Winnable):
     def __init__(self, length=3):
@@ -105,14 +118,14 @@ class UltimateBoard(Winnable):
             raise Exception("Board tile is already occupied")
         else:
             self.changeCurrentPlayer()
-            self.changeBoards(self.currentPlayer)
+            self.changeBoardsCurrentPlayer(self.currentPlayer)
             if (self.boards[x][y].isDone):
                 self.currentBoard = (-1, -1)
             else:
                 self.currentBoard = (x, y)
         self.winner() #updates isdone
 
-    def changeBoards(tile):
+    def changeBoardsCurrentPlayer(tile):
         for x in range(length):
             for y in range(length):
                 self.boards[x][y].currentPlayer = tile;
