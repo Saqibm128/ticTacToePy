@@ -10,7 +10,6 @@ class SimpleStorage():
     """ Generate an identifier and new key for new game data """
     def genKey(self):
         self.maxId += 1
-
         return (self.maxId, self.maxId) #this is simple, so duh
 
     """ Generate game object from data lookup """
