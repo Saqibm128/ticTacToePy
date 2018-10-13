@@ -10,7 +10,7 @@ class SimpleStorage():
     """ Generate an identifier and new key for new game data """
     def genKey(self):
         self.maxId += 1
-        return (self.maxId, self.maxId) #this is simple, so duh
+        return (str(self.maxId), str(self.maxId)) #this is simple, so duh
 
     """ Generate game object from data lookup """
     def getBoard(self, id, key):
@@ -23,4 +23,4 @@ class SimpleStorage():
     """ Save game object in simple data structure """
     def saveBoard(self, id, key, board):
         if (key == id):
-            self._data[key] = board.json()
+            self._data[key] = board.dict()
